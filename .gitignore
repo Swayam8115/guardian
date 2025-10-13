@@ -1,0 +1,47 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# --- Jupyter / Notebooks ---
+.ipynb_checkpoints/
+
+# --- IDE & Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Project specific ---
+# Sensitive keys
+.env
+*.key
+*.pem
+
+# Data outputs
+fir_output.json
+outputs/
+logs/
+
+# PDFs
+data/*.pdf
+
+# Cache
+.cache/
