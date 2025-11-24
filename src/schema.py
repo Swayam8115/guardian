@@ -22,6 +22,7 @@ class FIRRecord(BaseModel):
         description="Statutes/sections invoked (e.g., IPC 420, IT Act 66C)."
     )
     location: Optional[str] = Field(default=None, description="Primary incident location/address.Place of occurrence")
+    generalised_location: Optional[str] = Field(default=None, description="Generalize the Place of occurrence address to [Neighborhood, Locality, City], excluding house numbers and street details")
     incident_summary: Optional[str] = Field(
         default=None,
         description="Concise English summary of the incident and allegations (120–250 words).When writing the incident summary, do NOT use any real names found in the FIR."
