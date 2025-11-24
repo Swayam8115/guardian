@@ -1,7 +1,7 @@
 # FIR Translator & Structured Extractor (LangChain + Gemini/Groq)
 
 This tool reads an FIR PDF (any language), translates to English, and produces a structured JSON
-using a Pydantic schema — powered by LangChain's `with_structured_output`.
+using a Pydantic schema powered by LangChain's `with_structured_output`.
 
 ## Quick Start
 
