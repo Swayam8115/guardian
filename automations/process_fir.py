@@ -59,6 +59,7 @@ def process_all_firs():
             })
 
         except Exception as e:
+            db.rollback()
             print(f"[red]Error processing {pdf_file.name}: {e}[/red]")
 
     db.close()

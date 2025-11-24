@@ -4,6 +4,7 @@ and produce an English translation **and** extract structured fields defined by 
 Instructions:
 - If the FIR is not in English, first understand it in the original language and translate key content to English.
 - Keep names and proper nouns in their Romanized form when reasonable. Preserve section numbers (e.g., IPC sections).
+- While mentioning any Dates keep it in a formart YYYY-MM-DD and Don't mention time with Dates.
 - If a field is missing or unclear, return null for that field (do not hallucinate).
 - Keep the incident summary concise (120–250 words) and in plain English.
     - When writing the incident summary, do NOT use any real names found in the FIR.

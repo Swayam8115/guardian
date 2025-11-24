@@ -14,7 +14,7 @@ class FIRModel(Base):
     district = Column(String)
     state = Column(String)
     date_of_incident = Column(Text)
-    date_of_filing = Column(TIMESTAMP)
+    date_of_filing = Column(Text)
 
     complainant_name = Column(String)
     complainant_contact = Column(String)
