@@ -16,6 +16,7 @@ class FIRRecord(BaseModel):
     complainant_contact: Optional[str] = Field(default=None, description="Contact details of complainant, if present.")
     accused_names: Optional[List[str]] = Field(default=None, description="List of accused persons, if named.")
     victim_names: Optional[List[str]] = Field(default=None, description="List of victims mentioned, if any.")
+    crime_categories: Optional[List[str]] = Field(default=None, description="You must classify the FIR into one or more crime categories.")
     sections_invoked: Optional[List[str]] = Field(
         default=None,
         description="Statutes/sections invoked (e.g., IPC 420, IT Act 66C)."
@@ -23,7 +24,7 @@ class FIRRecord(BaseModel):
     location: Optional[str] = Field(default=None, description="Primary incident location/address.")
     incident_summary: Optional[str] = Field(
         default=None,
-        description="Concise English summary of the incident and allegations (120–250 words)."
+        description="Concise English summary of the incident and allegations (120–250 words).When writing the incident summary, do NOT use any real names found in the FIR."
     )
     actions_taken: Optional[str] = Field(
         default=None,
