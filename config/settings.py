@@ -3,10 +3,11 @@ import os
 
 class Settings(BaseSettings):
     GOOGLE_API_KEY: str
+    SUPABASE_DB_URL: str
     DATA_PATH: str = "data/"
     OUTPUT_PATH: str = "output/"
     PROMPTS_PATH: str = "prompts/"
-    MAX_RETRIES: int = 0
+    PROCESSED_PATH: str = "processed/"
 
     class Config:
         env_file = ".env"

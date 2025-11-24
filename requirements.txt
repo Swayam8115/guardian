@@ -6,4 +6,5 @@ pydantic-settings
 pdfplumber
 python-dotenv>=1.0.1
 rich>=13.7.1
-groq
+sqlalchemy 
+psycopg2-binary
