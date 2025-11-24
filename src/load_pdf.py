@@ -1,4 +1,4 @@
-from pypdf import PdfReader
+import pdfplumber
 from pathlib import Path
 
 def extract_text_from_pdf(pdf_path: str) -> str:
@@ -6,15 +6,15 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     if not path.exists():
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
-    reader = PdfReader(str(path))
     texts = []
-    for i, page in enumerate(reader.pages):
-        try:
-            txt = page.extract_text() or ""
-        except Exception:
-            txt = ""
-        if txt:
-            texts.append(f"\n\n--- Page {i+1} ---\n{txt.strip()}")
-        else:
-            texts.append(f"\n\n--- Page {i+1} ---\n[No text extracted]")
+    with pdfplumber.open(str(path)) as pdf:
+        for i, page in enumerate(pdf.pages):
+            try:
+                txt = page.extract_text() or ""
+            except:
+                txt = ""
+            
+            texts.append(
+                f"\n\n--- Page {i+1} ---\n{txt.strip() if txt else '[No text extracted]'}"
+            )
     return "\n".join(texts)
