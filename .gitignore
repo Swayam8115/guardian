@@ -36,8 +36,8 @@ Thumbs.db
 *.pem
 
 # Data outputs
-fir_output.json
-outputs/
+FIR_REPORT.json
+output/
 logs/
 
 # PDFs

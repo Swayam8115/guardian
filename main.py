@@ -17,7 +17,7 @@ def build_chain(prompt_text: str):
 
 def main():
 
-    document_text = extract_text_from_pdf(settings.DATA_PATH + "extract_fir_prompt.txt")
+    document_text = extract_text_from_pdf(settings.DATA_PATH + "0172 Publish FIR.pdf")
     prompt_text = read_prompt(settings.PROMPTS_PATH + "extract_fir_prompt.txt")
     chain = build_chain(prompt_text)
 

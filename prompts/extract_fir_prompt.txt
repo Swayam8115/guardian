@@ -37,5 +37,3 @@ Context you will receive:
 - {document_text}: the full text extracted from a PDF of an FIR.
 
 Now extract the information faithfully.
-
-{format_instructions}
