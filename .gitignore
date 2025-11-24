@@ -42,6 +42,7 @@ logs/
 
 # PDFs
 data/*.pdf
+processed/
 
 # Cache
 .cache/
