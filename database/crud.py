@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from database.models import FIRModel
 from datetime import datetime
+import time
 
 def insert_fir_record(db: Session, file_name: str, fir_json: dict):
     record = FIRModel(
@@ -31,3 +32,17 @@ def insert_fir_record(db: Session, file_name: str, fir_json: dict):
     db.commit()
     db.refresh(record)
     return record
+
+def get_rows_missing_coordinates(db: Session):
+    return db.query(FIRModel).filter(
+        (FIRModel.latitude == None) | (FIRModel.longitude == None)
+    ).all()
+
+
+def update_coordinates(db: Session, file_name: str, lat: float, lon: float):
+    db.query(FIRModel).filter(FIRModel.file_name == file_name).update({
+        "latitude": lat,
+        "longitude": lon
+    })
+    db.commit()
+    

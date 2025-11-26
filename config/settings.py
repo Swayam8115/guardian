@@ -4,6 +4,8 @@ import os
 class Settings(BaseSettings):
     GOOGLE_API_KEY: str
     SUPABASE_DB_URL: str
+    MAPMYINDIA_CLIENT_ID: str
+    MAPMYINDIA_CLIENT_SECRET: str
     DATA_PATH: str = "data/"
     OUTPUT_PATH: str = "output/"
     PROMPTS_PATH: str = "prompts/"
