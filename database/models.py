@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, JSON, TIMESTAMP, DOUBLE_PRECISION
+from sqlalchemy import Column, Integer, String, Text, JSON, TIMESTAMP, Float
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -26,8 +26,8 @@ class FIRModel(Base):
 
     location = Column(Text)
     generalised_location = Column(Text)
-    latitude = Column(DOUBLE_PRECISION)     
-    longitude = Column(DOUBLE_PRECISION) 
+    latitude = Column(Float, nullable=True)        # FIXED
+    longitude = Column(Float, nullable=True) 
     incident_summary = Column(Text)
     actions_taken = Column(Text)
     attachments_mentioned = Column(JSON)
