@@ -33,7 +33,7 @@ Guardian is an end-to-end crime processing, geocoding, and visualization system 
 # 🔧 Installation & Setup
 1️⃣ Clone the Repository
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Swayam8115/guardian.git
 cd guardian
 ```
 2️⃣ 🐍 Install Dependencies
@@ -49,9 +49,13 @@ pip install fastapi uvicorn sqlalchemy requests python-dotenv
 
 Create .env in the project root:
 ```bash
-SUPABASE_DB_URL=postgresql://<user>:<password>@<host>:5432/postgres
+GOOGLE_API_KEY=your_gemini_api_key_here
+SUPABASE_DB_URL=postgresql+psycopg2://..
 MAPMYINDIA_API_KEY=xxxxxxxx
 MAPMYINDIA_SECRET=xxxxxxxx
+DATA_PATH=data/
+OUTPUT_PATH=output/
+PROMPTS_PATH=prompts/
 ```
 4️⃣ 🧠 Run FIR Processing 
 - Processes all FIR PDFs and inserts into Supabase:
@@ -89,7 +93,7 @@ You will now see every FIR plotted on the map
 
 # 🛠️ Technologies Used
 - Python
-- LangChain + Groq
+- LangChain + Gemini
 - Supabase PostgreSQL
 - SQLAlchemy ORM
 - FastAPI
