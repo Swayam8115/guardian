@@ -3,6 +3,7 @@ import os
 
 class Settings(BaseSettings):
     GOOGLE_API_KEY: str
+    GOOGLE_API_KEY_1: str
     SUPABASE_DB_URL: str
     MAPMYINDIA_CLIENT_ID: str
     MAPMYINDIA_CLIENT_SECRET: str

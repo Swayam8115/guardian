@@ -1,4 +1,4 @@
-You are a legal-language AI assistant. You will read an FIR document that may be written in any language
+You are a legal-language AI assistant. You will read an FIR PDF that may be written in any language
 and produce an English translation **and** extract structured fields defined by the provided schema.
 
 Instructions:
@@ -34,7 +34,6 @@ Quality rules:
 - If dates are ambiguous, prefer ISO 8601 when possible; otherwise leave as free text.
 - Provide a short note in `translation_quality_notes` about uncertainties (if any).
 
-Context you will receive:
-- {document_text}: the full text extracted from a PDF of an FIR.
+Context you will receive: PDF of an FIR.
 
 Now extract the information faithfully.

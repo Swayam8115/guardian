@@ -29,16 +29,17 @@ def process_all_firs():
     print(f"[bold]Found {len(fir_files)} FIR(s) to process...[/bold]")
 
     for pdf_file in fir_files:
-        
         output_path = output_folder / f"{pdf_file.stem}.json"
         if output_path.exists():
             print(f"Skipping {pdf_file.name} — already processed.")
             continue
 
         print(f"\nProcessing: {pdf_file.name}")
+
         try:
-            document_text = extract_text_from_pdf(str(pdf_file))
-            result: FIRRecord = chain.invoke({"document_text": document_text})
+            pdf_bytes = pdf_file.read_bytes()
+
+            result: FIRRecord = chain.invoke({"pdf": pdf_bytes})
             fir_json = result.model_dump()
 
             output_path.write_text(
@@ -61,7 +62,6 @@ def process_all_firs():
         except Exception as e:
             db.rollback()
             print(f"[red]Error processing {pdf_file.name}: {e}[/red]")
-
     db.close()
     print("\n[bold]Batch FIR Processing Completed![/bold]")
 

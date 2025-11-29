@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 
 <head>
@@ -82,6 +82,124 @@
             }
 
             console.log("All markers loaded!");
+        }
+    </script>
+</body>
+</html>
+
+
+ -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>FIR Crime Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        html, body, #map {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+        }
+        .popup-box {
+            width: 200px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .popup-title { font-weight: bold; margin-bottom: 6px; }
+    </style>
+
+    <script src="https://apis.mappls.com/advancedmaps/api/8b2a4771decce4fc764dfbf54c3d734e/map_sdk?layer=vector&v=3.0&callback=initMap" defer async></script>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000/api/fir-data";
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function initMap() {
+            const map = new mappls.Map("map", {
+                center: [18.5204, 73.8567],
+                zoom: 11,
+                zoomControl: true
+            });
+
+            let firData = [];
+            try {
+                const response = await fetch(API_URL);
+                firData = await response.json();
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+                return;
+            }
+
+            // 1. Group Data by Coordinates
+            const locationGroups = {};
+            firData.forEach(row => {
+                if (!row.latitude || !row.longitude) return;
+                const key = `${row.latitude}_${row.longitude}`;
+                if (!locationGroups[key]) locationGroups[key] = [];
+                locationGroups[key].push(row);
+            });
+
+            // 2. Jitter Configuration
+            // This controls how wide the area is. 
+            // 0.001 is approx 110 meters. Increase to 0.002 for more spread.
+            const SPREAD_FACTOR = 0.005; 
+
+            for (const key in locationGroups) {
+                const group = locationGroups[key];
+                const count = group.length;
+
+                for (let i = 0; i < count; i++) {
+                    const row = group[i];
+                    
+                    let finalLat = parseFloat(row.latitude);
+                    let finalLng = parseFloat(row.longitude);
+
+                    // Only scatter if there is an overlap (count > 1)
+                    if (count > 1) {
+                        // Generate a random number between -0.5 and 0.5
+                        const randomLat = Math.random() - 0.5;
+                        const randomLng = Math.random() - 0.5;
+
+                        // Apply the offset
+                        finalLat = finalLat + (randomLat * SPREAD_FACTOR);
+                        finalLng = finalLng + (randomLng * SPREAD_FACTOR);
+                    }
+
+                    const crime = row.crime_categories?.join(", ") || "Unknown Crime";
+                    const summary = row.incident_summary || "No summary available";
+
+                    const popupHTML = `
+                        <div class="popup-box">
+                            <div class="popup-title">Crime:</div> ${crime}<br><br>
+                            <div class="popup-title">Summary:</div> ${summary}
+                        </div>
+                    `;
+
+                    new mappls.Marker({
+                        map: map,
+                        position: { lat: finalLat, lng: finalLng },
+                        fitbounds: false,
+                        icon_url: "https://apis.mapmyindia.com/map_v3/1.png",
+                        popupHtml: popupHTML
+                    });
+
+                    await sleep(50); 
+                }
+            }
+            console.log("Markers loaded with random jitter.");
         }
     </script>
 </body>
