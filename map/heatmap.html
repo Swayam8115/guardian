@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FIR Heatmap</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0">
+    <style>
+        html, body, #map {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+
+    <!-- IMPORTANT: include heatmap layer -->
+    <script 
+        src="https://apis.mappls.com/advancedmaps/api/8b2a4771decce4fc764dfbf54c3d734e/map_sdk?layer=vector,heatmap&v=3.0&callback=initMap" 
+        defer async>
+    </script>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script>
+const API_URL = "http://127.0.0.1:8000/api/fir-data";
+
+async function initMap() {
+
+    const map = new mappls.Map("map", {
+        center: [18.5204, 73.8567],
+        zoom: 11,
+        zoomControl: true
+    });
+
+    let firData = [];
+    try {
+        const resp = await fetch(API_URL);
+        firData = await resp.json();
+    } catch (e) {
+        console.error("Failed loading FIR data:", e);
+        return;
+    }
+
+    const groups = {};
+    firData.forEach(r => {
+        if (!r.latitude || !r.longitude) return;
+        const k = `${r.latitude}_${r.longitude}`;
+        if (!groups[k]) groups[k] = [];
+        groups[k].push(r);
+    });
+
+    const SPREAD = 0.003;
+    const heatPoints = [];
+
+    for (const k in groups) {
+        const list = groups[k];
+        const count = list.length;
+
+        list.forEach(r => {
+            let lat = parseFloat(r.latitude);
+            let lng = parseFloat(r.longitude);
+
+            if (count > 1) {
+                lat += (Math.random() - 0.5) * SPREAD;
+                lng += (Math.random() - 0.5) * SPREAD;
+            }
+
+            heatPoints.push({
+                lat: lat,
+                lng: lng,
+                weight: count
+            });
+        });
+    }
+
+    new mappls.HeatmapLayer({
+        map: map,
+        data: heatPoints,
+        radius: 25,
+        fitbounds: true
+    });
+}
+</script>
+</body>
+</html>

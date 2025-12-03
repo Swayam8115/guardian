@@ -18,7 +18,7 @@ def get_token():
 
 
 def get_formatted_address(raw_address: str):
-    token = "0b70c006-2d79-4d44-9c32-8f5a4a0ed6fb"
+    token = "f87c9d2f-3037-4567-9a2b-14b77afcd4b5"
     url = "https://atlas.mapmyindia.com/api/places/geocode"
     headers = {"Authorization": f"Bearer {token}"}
     params = {
@@ -62,13 +62,13 @@ def get_lat_lon(address: str,add1: str):
     
     result = osm_search(address)
     if not result:
-        print("Using generalised Location")
+        print("[bold]Using generalised Location![/bold]")
         time.sleep(1.2)
         add2 = get_formatted_address(add1)
         result = osm_search(add2)
         if not result :
             print("Generalised location also failed")
-            token = "0b70c006-2d79-4d44-9c32-8f5a4a0ed6fb"
+            token = "f87c9d2f-3037-4567-9a2b-14b77afcd4b5"
             url = "https://atlas.mapmyindia.com/api/places/geocode"
             headers = {"Authorization": f"Bearer {token}"}
             params = {
@@ -83,7 +83,7 @@ def get_lat_lon(address: str,add1: str):
             add3=cop.get("formattedAddress")
             result = osm_search(add3)
             if not result:
-                print("SAB FAILED QUERY KI MKC")
+                print("SAB FAILED QUERY KI ***")
                 return None,None
 
     top = result[0]

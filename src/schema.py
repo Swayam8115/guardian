@@ -7,21 +7,21 @@ class FIRRecord(BaseModel):
         description="Language of the original FIR content, if identifiable."
     )
     fir_number: Optional[str] = Field(default=None, description="FIR number or identifier.")
-    police_station: Optional[str] = Field(default=None, description="Name of the police station.")
-    district: Optional[str] = Field(default=None, description="District associated with the FIR.")
-    state: Optional[str] = Field(default=None, description="State/Province associated with the FIR.")
+    police_station: Optional[str] = Field(default=None, description="Name of the police station.Translate it in English.")
+    district: Optional[str] = Field(default=None, description="District associated with the FIR.Translate it in English.")
+    state: Optional[str] = Field(default=None, description="State/Province associated with the FIR.Translate it in English.")
     date_of_incident: Optional[str] = Field(default=None, description="Date or date range of the alleged incident.YYYY-MM-DD")
     date_of_filing: Optional[str] = Field(default=None, description="Date the FIR was filed/registered(YYYY-MM-DD).Don't mention time.")
-    complainant_name: Optional[str] = Field(default=None, description="Name of the complainant/informant.")
-    complainant_contact: Optional[str] = Field(default=None, description="Contact details of complainant, if present.")
-    accused_names: Optional[List[str]] = Field(default=None, description="List of accused persons, if named.")
-    victim_names: Optional[List[str]] = Field(default=None, description="List of victims mentioned, if any.")
+    complainant_name: Optional[str] = Field(default=None, description="Name of the complainant/informant.Translate it in English if not.")
+    complainant_contact: Optional[str] = Field(default=None, description="Contact details of complainant, if present.Translate it in English if not.")
+    accused_names: Optional[List[str]] = Field(default=None, description="List of accused persons, if named.Translate it in English.")
+    victim_names: Optional[List[str]] = Field(default=None, description="List of victims mentioned, if any.Translate it in English.")
     crime_categories: Optional[List[str]] = Field(default=None, description="You must classify the FIR into one or more crime categories.")
     sections_invoked: Optional[List[str]] = Field(
         default=None,
         description="Statutes/sections invoked (e.g., IPC 420, IT Act 66C)."
     )
-    location: Optional[str] = Field(default=None, description="Primary incident location/address.Place of occurrence")
+    location: Optional[str] = Field(default=None, description="Primary incident location/address.Place of occurrence.Translate it in English.")
     generalised_location: Optional[str] = Field(default=None, description="Generalize the Place of occurrence address to [Neighborhood, Locality, City], excluding house numbers and street details")
     incident_summary: Optional[str] = Field(
         default=None,
