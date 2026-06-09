@@ -30,66 +30,54 @@ Guardian is an end-to-end crime processing, geocoding, and visualization system 
 - Clean SQLAlchemy ORM-based CRUD
 - Connected directly to Supabase PostgreSQL
 
-# 🔧 Installation & Setup
-1️⃣ Clone the Repository
-```bash
-git clone https://github.com/Swayam8115/guardian.git
-cd guardian
-```
-2️⃣ 🐍 Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+## 🎨 UI/UX Preview
 
-- If you don’t have FastAPI / Uvicorn installed:
-```bash
-pip install fastapi uvicorn sqlalchemy requests python-dotenv
-```
-3️⃣ ⚙️ Environment Variables
+Guardian features a modern crime intelligence interface designed for real-time monitoring, spatial crime analysis, and AI-assisted investigation workflows. Below are the core interface mockups integrated into the platform.
 
-Create .env in the project root:
-```bash
-GOOGLE_API_KEY=your_gemini_api_key_here
-SUPABASE_DB_URL=postgresql+psycopg2://..
-MAPMYINDIA_API_KEY=xxxxxxxx
-MAPMYINDIA_SECRET=xxxxxxxx
-DATA_PATH=data/
-OUTPUT_PATH=output/
-PROMPTS_PATH=prompts/
-```
-4️⃣ 🧠 Run FIR Processing 
-- Processes all FIR PDFs and inserts into Supabase:
-```bash
-python main.py
-```
+---
 
-This runs:
-- process_all_firs() → Extract FIR data
-- run_geo_code() → Geocode missing coordinates
+### 🖥️ Smart Dashboard + AI Chatbot
 
-5️⃣ 🚀 Start Backend Server
+The central dashboard provides a consolidated overview of FIR analytics, crime insights, and operational monitoring. An integrated AI chatbot enables natural-language interaction with FIR records, helping users quickly retrieve summaries, crime statistics, and investigation-related information.
 
-Run FastAPI Server:
-```bash
-uvicorn backend.server_main:app --reload --port 8000
-```
-- Backend API now available at: http://127.0.0.1:8000/api/fir-data
+**Key Highlights**
+- Real-time FIR statistics
+- Crime category visualization
+- AI-powered conversational assistant
+- Incident monitoring panels
+- Interactive analytics widgets
 
-6️⃣ 🌍 Run Frontend Map
+![Dashboard + Chatbot](utils/chatbot.jpeg)
 
-- Go to frontend folder:
-```bash
-cd frontend/map
-```
+---
 
-Start a static server:
-```bash
-python -m http.server 5500
-```
+### 🔥 Crime Heatmap Visualization
 
-- Open in browser: http://127.0.0.1:5500/index.html
+The heatmap module visualizes crime density across geographical regions, enabling rapid identification of hotspots and high-risk zones.
 
-You will now see every FIR plotted on the map
+**Key Highlights**
+- Spatial crime density analysis
+- Hotspot detection
+- Region-wise crime concentration
+- Dynamic visual overlays
+- Improved situational awareness
+
+![Crime Heatmap](utils/heatmap.jpeg)
+
+---
+
+### 🗺️ Interactive Crime Mapping Interface
+
+The interactive map displays geocoded FIR incidents with detailed markers and popup-based incident summaries for efficient navigation and investigation.
+
+**Key Highlights**
+- Real-time FIR plotting
+- Interactive incident markers
+- FIR detail popups
+- Location-based navigation
+- Clean and responsive map UI
+
+![Interactive Crime Map](utils/normal-map.jpeg)
 
 # 🛠️ Technologies Used
 - Python
@@ -97,5 +85,5 @@ You will now see every FIR plotted on the map
 - Supabase PostgreSQL
 - SQLAlchemy ORM
 - FastAPI
-- MapMyIndia / Mappls Maps
+- Google Maps API
 - HTML + JS Frontend
