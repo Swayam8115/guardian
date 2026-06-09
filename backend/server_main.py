@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-from backend.fir_api import router as fir_router
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from backend.fir_api import router as fir_router
+from backend.auth_api import router as auth_router
+from backend.stats_api import router as stats_router
+from backend.chat_api import router as chat_router
+from backend.report_api import router as report_router
 
 app = FastAPI()
 app.add_middleware(
@@ -11,8 +13,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Add backend routes
+
 app.include_router(fir_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
+app.include_router(stats_router, prefix="/api")
+app.include_router(chat_router, prefix="/api")
+app.include_router(report_router, prefix="/api")
 
 
 @app.get("/")

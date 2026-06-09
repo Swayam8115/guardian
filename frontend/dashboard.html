@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUARDIAN</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function() {
+            var s = document.createElement('script');
+            s.src = 'https://maps.googleapis.com/maps/api/js?key=' + CONFIG.MAPS_KEY + '&callback=initMap';
+            s.async = true; s.defer = true;
+            document.head.appendChild(s);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <img src="assets/logo.jpeg" alt="Guardian">
+        <span>GUARDIAN</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a class="nav-item active" href="dashboard.html">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <a class="nav-item" href="report.html">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Report Crime
+        </a>
+        <a class="nav-item" href="map/index.html" target="_blank">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Incident Map
+        </a>
+        <a class="nav-item" href="map/heatmap.html" target="_blank">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z"/></svg>
+            Heat map
+        </a>
+        <button class="nav-item" onclick="toggleChat()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Guardian Assist
+        </button>
+    </nav>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="topbar-title">
+            <h1>Dashboard</h1>
+            <p>Get a comprehensive overview of crime activity in your area.</p>
+        </div>
+        <div id="user-pill-container"></div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="label">Total incidents (October 2025)</div>
+            <div class="value" id="stat-total">—</div>
+            <div class="badge" id="stat-month-badge">most active month</div>
+        </div>
+        <div class="stat-card">
+            <div class="label" id="stat-label-2">Cases in top district</div>
+            <div class="value" id="stat-district">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Top crime type</div>
+            <div class="value" id="stat-crime" style="font-size:1.4rem">—</div>
+            <div class="badge" id="stat-crime-badge">—</div>
+        </div>
+    </div>
+
+    <!-- Dashboard grid -->
+    <div class="dashboard-grid">
+
+        <!-- Map (full width) -->
+        <div class="card card-map">
+            <div class="card-header">
+                <h3>Incident Map</h3>
+                <span style="font-size:0.78rem;color:var(--text-muted)" id="map-updated">Loading…</span>
+            </div>
+            <div id="dashboard-map" style="height:calc(100% - 52px)"></div>
+            <button class="filter-btn" onclick="toggleFilterMenu()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+                Filter
+            </button>
+            <div class="filter-dropdown" id="filter-menu"></div>
+        </div>
+
+        <!-- Frequency trend -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Frequency Trend</h3>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <select id="trend-year" onchange="loadTrend()" style="background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:0.8rem;cursor:pointer;outline:none;">
+                        <option value="">This Week</option>
+                    </select>
+                    <select id="trend-month" onchange="loadTrend()" style="background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:0.8rem;cursor:pointer;outline:none;">
+                        <option value="">Full Year</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-wrap"><canvas id="trend-chart"></canvas></div>
+        </div>
+
+        <!-- Crime distribution -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Crime Distribution by Type</h3>
+            </div>
+            <div class="chart-wrap"><canvas id="dist-chart"></canvas></div>
+        </div>
+
+    </div>
+</main>
+
+<!-- ── Guardian Assist chat panel ── -->
+<div class="chat-panel" id="chat-panel">
+    <div class="chat-header">
+        <span>Guardian Assist</span>
+        <button onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+        <div class="msg bot">Hello. I can help you analyze crime trends, risk levels, and live incidents. What would you like to know?</div>
+    </div>
+    <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter') sendChat()">
+        <button onclick="sendChat()">Send</button>
+    </div>
+</div>
+
+<script src="assets/auth.js"></script>
+<script>
+const BACKEND = 'http://127.0.0.1:8000';
+
+requireAuth();
+renderUserPill('user-pill-container');
+
+// ── Stats ──
+async function loadStats() {
+    try {
+        const data = await fetch(`${BACKEND}/api/stats`).then(r => r.json());
+        document.getElementById('stat-total').textContent = data.total_month.toLocaleString();
+
+        document.getElementById('stat-label-2').textContent = `Cases in ${data.top_district}`;
+        document.getElementById('stat-district').textContent = data.top_district_count.toLocaleString();
+
+        document.getElementById('stat-crime').textContent      = data.top_crime;
+        document.getElementById('stat-crime-badge').textContent = `${data.top_crime_count.toLocaleString()} cases (${data.top_crime_pct}%)`;
+    } catch(e) { console.error('Stats failed', e); }
+}
+
+// ── Map ──
+let map, allMarkers = [], infoWindow, allFirData = [], activeFilters = new Set();
+
+async function initMap() {
+    map = new google.maps.Map(document.getElementById('dashboard-map'), {
+        center: { lat: 18.5204, lng: 73.8567 },
+        zoom: 11,
+    });
+    infoWindow = new google.maps.InfoWindow();
+
+    try {
+        allFirData = await fetch(`${BACKEND}/api/fir-data`).then(r => r.json());
+        buildFilterMenu();
+        renderMarkers();
+        document.getElementById('map-updated').textContent = 'Last updated: just now';
+    } catch(e) { console.error('Map data failed', e); }
+}
+
+function renderMarkers() {
+    allMarkers.forEach(m => m.setMap(null));
+    allMarkers = [];
+    const filtered = activeFilters.size === 0
+        ? allFirData
+        : allFirData.filter(r => r.crime_categories?.some(c => activeFilters.has(c)));
+
+    filtered.forEach(row => {
+        if (!row.latitude || !row.longitude) return;
+        const marker = new google.maps.Marker({
+            position: { lat: parseFloat(row.latitude), lng: parseFloat(row.longitude) },
+            map,
+        });
+        const crime = row.crime_categories?.join(', ') || 'Unknown';
+        marker.addListener('click', () => {
+            infoWindow.setContent(`<div style="width:200px;font-size:13px;line-height:1.5;color:#222">
+                <b>Crime:</b> ${crime}<br><br>
+                <b>Summary:</b> ${row.incident_summary || 'N/A'}
+            </div>`);
+            infoWindow.open(map, marker);
+        });
+        allMarkers.push(marker);
+    });
+}
+
+function buildFilterMenu() {
+    const cats = new Set();
+    allFirData.forEach(r => r.crime_categories?.forEach(c => cats.add(c)));
+    const menu = document.getElementById('filter-menu');
+    menu.innerHTML = '<label style="font-weight:700;padding:8px 16px 4px;display:block;font-size:0.8rem;color:#888">Filter by Crime Type</label>';
+    cats.forEach(cat => {
+        menu.innerHTML += `<label><input type="checkbox" onchange="toggleFilter('${cat}', this.checked)"> ${cat}</label>`;
+    });
+}
+
+function toggleFilter(cat, checked) {
+    checked ? activeFilters.add(cat) : activeFilters.delete(cat);
+    renderMarkers();
+}
+
+function toggleFilterMenu() {
+    document.getElementById('filter-menu').classList.toggle('open');
+}
+
+// ── Trend chart ──
+let trendChart;
+
+async function initTrendDropdowns() {
+    try {
+        const years = await fetch(`${BACKEND}/api/available-years`).then(r => r.json());
+        const sel = document.getElementById('trend-year');
+        years.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            sel.appendChild(opt);
+        });
+    } catch(e) { console.error('Years fetch failed', e); }
+}
+
+async function loadTrend() {
+    const year  = document.getElementById('trend-year').value;
+    const month = document.getElementById('trend-month').value;
+
+    // Disable month dropdown when no year is selected (showing "This Week")
+    const monthSel = document.getElementById('trend-month');
+    monthSel.disabled = !year;
+    monthSel.style.opacity = year ? '1' : '0.4';
+
+    const params = new URLSearchParams();
+    if (year)  params.set('year',  year);
+    if (month && year) params.set('month', month);
+    if (!year) params.set('period', 'week');
+
+    try {
+        const data = await fetch(`${BACKEND}/api/frequency-trend?${params}`).then(r => r.json());
+        const keys = [...new Set(data.map(d => d.date))].sort();
+        const categories = [...new Set(data.map(d => d.category))];
+        const colors = ['#1a73e8', '#e53935', '#43a047', '#fb8c00', '#8e24aa'];
+
+        // Label format: day-only for month view, "MMM" for year view, "MM-DD" for week
+        const formatLabel = key => {
+            if (year && month) return key.slice(8);   // DD
+            if (year)          return key.slice(5);   // MM
+            return key.slice(5);                      // MM-DD
+        };
+
+        const datasets = categories.map((cat, i) => ({
+            label: cat,
+            data: keys.map(k => {
+                const entry = data.find(d => d.date === k && d.category === cat);
+                return entry ? entry.count : 0;
+            }),
+            borderColor: colors[i % colors.length],
+            backgroundColor: colors[i % colors.length] + '22',
+            tension: 0.4,
+            fill: false,
+            pointRadius: 4,
+        }));
+
+        if (trendChart) trendChart.destroy();
+        trendChart = new Chart(document.getElementById('trend-chart'), {
+            type: 'line',
+            data: { labels: keys.map(formatLabel), datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#e8eaf6', font: { size: 11 } } } },
+                scales: {
+                    x: { ticks: { color: '#90a4ae' }, grid: { color: '#1e3a5f' } },
+                    y: { ticks: { color: '#90a4ae' }, grid: { color: '#1e3a5f' }, beginAtZero: true },
+                },
+            },
+        });
+    } catch(e) { console.error('Trend failed', e); }
+}
+
+// ── Distribution chart ──
+let distChart;
+async function loadDistribution() {
+    try {
+        const data = await fetch(`${BACKEND}/api/crime-distribution`).then(r => r.json());
+        const top5 = data.slice(0, 5);
+        const other = data.slice(5).reduce((s, d) => s + d.count, 0);
+        const labels = top5.map(d => d.category);
+        const counts = top5.map(d => d.count);
+        if (other > 0) { labels.push('Other'); counts.push(other); }
+
+        const colors = ['#1a73e8', '#e53935', '#43a047', '#fb8c00', '#8e24aa', '#607d8b'];
+
+        if (distChart) distChart.destroy();
+        distChart = new Chart(document.getElementById('dist-chart'), {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 0 }] },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#e8eaf6', font: { size: 11 }, padding: 14, boxWidth: 12 },
+                    },
+                },
+            },
+        });
+    } catch(e) { console.error('Distribution failed', e); }
+}
+
+// ── Guardian Assist ──
+function toggleChat() {
+    document.getElementById('chat-panel').classList.toggle('open');
+}
+
+async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+
+    const box = document.getElementById('chat-messages');
+    box.innerHTML += `<div class="msg user">${msg}</div>`;
+
+    const typing = document.createElement('div');
+    typing.className = 'msg bot';
+    typing.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+    box.appendChild(typing);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch(`${BACKEND}/api/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg }),
+        });
+        const data = await res.json();
+        typing.innerHTML = data.reply;
+    } catch {
+        typing.innerHTML = 'Sorry, something went wrong. Please try again.';
+    }
+    box.scrollTop = box.scrollHeight;
+}
+
+// ── Init ──
+loadStats();
+initTrendDropdowns().then(() => loadTrend());
+loadDistribution();
+</script>
+</body>
+</html>

@@ -3,6 +3,18 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
+class UserModel(Base):
+    __tablename__ = "users"
+
+    id           = Column(Integer, primary_key=True, index=True)
+    name         = Column(String, nullable=False)
+    email        = Column(String, unique=True, nullable=False, index=True)
+    password_hash = Column(String, nullable=True)   # None for Google-auth users
+    picture      = Column(String, nullable=True)
+    provider     = Column(String, default="manual") # "google" or "manual"
+    created_at   = Column(TIMESTAMP)
+
 class FIRModel(Base):
     __tablename__ = "fir_records"
 

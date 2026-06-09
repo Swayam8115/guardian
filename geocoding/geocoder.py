@@ -18,7 +18,7 @@ def get_token():
 
 
 def get_formatted_address(raw_address: str):
-    token = "f87c9d2f-3037-4567-9a2b-14b77afcd4b5"
+    token = "6ec04d34-cd79-4df9-8227-3e84bd923a7e"
     url = "https://atlas.mapmyindia.com/api/places/geocode"
     headers = {"Authorization": f"Bearer {token}"}
     params = {
@@ -68,7 +68,7 @@ def get_lat_lon(address: str,add1: str):
         result = osm_search(add2)
         if not result :
             print("Generalised location also failed")
-            token = "f87c9d2f-3037-4567-9a2b-14b77afcd4b5"
+            token = "6ec04d34-cd79-4df9-8227-3e84bd923a7e"
             url = "https://atlas.mapmyindia.com/api/places/geocode"
             headers = {"Authorization": f"Bearer {token}"}
             params = {

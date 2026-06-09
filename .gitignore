@@ -1,50 +1,48 @@
-# --- Python ---
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.so
 *.egg-info/
-.eggs/
 dist/
 build/
 
-# --- Virtual Environments ---
-.venv/
+# ── Virtual Environments ───────────────────────────────────────────────────────
 venv/
-ENV/
+.venv/
 env/
-*.env
+ENV/
 
-# --- Jupyter / Notebooks ---
-.ipynb_checkpoints/
+# ── Secrets & Credentials ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+frontend/assets/config.js
 
-# --- IDE & Editor ---
+# ── Project — sensitive folders ────────────────────────────────────────────────
+geocoding/
+
+# ── Project — data & outputs ───────────────────────────────────────────────────
+data/*.pdf
+output/
+processed/
+logs/
+FIR_REPORT.json
+
+# ── IDE & Editor ──────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# --- OS files ---
+# ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# --- Project specific ---
-# Sensitive keys
-.env
-*.key
-*.pem
-
-# Data outputs
-FIR_REPORT.json
-output/
-logs/
-
-# PDFs
-data/*.pdf
-processed/
-
-# Cache
+# ── Misc ──────────────────────────────────────────────────────────────────────
 .cache/
-
+.ipynb_checkpoints/
 testing/

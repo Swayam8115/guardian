@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUARDIAN — Login</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/config.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        .auth-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 9px;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .auth-tab.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .mode-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 9px;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: rgba(26,115,232,0.15);
+            color: var(--text);
+        }
+        .auth-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 9px;
+            padding: 11px 14px;
+            font-size: 0.9rem;
+            outline: none;
+            margin-bottom: 12px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .auth-input:focus { border-color: var(--accent); }
+        .auth-input::placeholder { color: var(--text-muted); }
+        .auth-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: opacity 0.2s;
+        }
+        .auth-submit:hover { opacity: 0.88; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .divider {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 4px 0 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-page">
+    <div class="login-card">
+
+        <!-- Logo stacked above title -->
+        <div style="text-align:center; margin-bottom:10px;">
+            <img src="assets/logo.jpeg" alt="Guardian Logo"
+                 style="width:64px;height:64px;border-radius:14px;object-fit:cover;display:block;margin:0 auto 10px;">
+            <h1 style="font-size:1.8rem;font-weight:800;letter-spacing:2px;">GUARDIAN</h1>
+        </div>
+        <p class="login-subtitle">Crime intelligence &amp; incident management platform</p>
+
+        <div id="error-msg" class="alert error" style="display:none"></div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="showTab('google')">Sign in with Google</button>
+            <button class="auth-tab" onclick="showTab('email')">Email &amp; Password</button>
+        </div>
+
+        <!-- Google tab -->
+        <div id="tab-google">
+            <button class="google-btn" id="google-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Continue with Google
+            </button>
+        </div>
+
+        <!-- Email tab -->
+        <div id="tab-email" style="display:none">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="showMode('login')">Login</button>
+                <button class="mode-btn" onclick="showMode('register')">Register</button>
+            </div>
+
+            <!-- Login form -->
+            <form id="login-form" onsubmit="submitLogin(event)">
+                <input class="auth-input" type="email" name="email" placeholder="Email address" required>
+                <input class="auth-input" type="password" name="password" placeholder="Password" required>
+                <button class="auth-submit" type="submit" id="login-btn">Login</button>
+            </form>
+
+            <!-- Register form -->
+            <form id="register-form" onsubmit="submitRegister(event)" style="display:none">
+                <input class="auth-input" type="text" name="name" placeholder="Full name" required>
+                <input class="auth-input" type="email" name="email" placeholder="Email address" required>
+                <input class="auth-input" type="password" name="password" placeholder="Password (min 6 chars)" minlength="6" required>
+                <button class="auth-submit" type="submit" id="register-btn">Create Account</button>
+            </form>
+        </div>
+
+        <!-- Hidden Google credential callback (client_id set via config.js) -->
+        <div id="g_id_onload"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+    </div>
+</div>
+
+<script src="assets/auth.js"></script>
+<script>
+    const BACKEND = 'http://127.0.0.1:8000';
+    const CLIENT_ID = CONFIG.OAUTH_CLIENT_ID;
+
+    // Set client_id on the GSI div dynamically from config.js
+    document.getElementById('g_id_onload').dataset.clientId = CLIENT_ID;
+
+    if (getUser()) window.location.href = 'dashboard.html';
+
+    // ── Tab switching ──
+    function showTab(tab) {
+        document.getElementById('tab-google').style.display = tab === 'google' ? 'block' : 'none';
+        document.getElementById('tab-email').style.display  = tab === 'email'  ? 'block' : 'none';
+        document.querySelectorAll('.auth-tab').forEach((el, i) => {
+            el.classList.toggle('active', (tab === 'google') ? i === 0 : i === 1);
+        });
+        clearError();
+    }
+
+    // ── Login / Register toggle ──
+    function showMode(mode) {
+        document.getElementById('login-form').style.display    = mode === 'login'    ? 'block' : 'none';
+        document.getElementById('register-form').style.display = mode === 'register' ? 'block' : 'none';
+        document.querySelectorAll('.mode-btn').forEach((el, i) => {
+            el.classList.toggle('active', (mode === 'login') ? i === 0 : i === 1);
+        });
+        clearError();
+    }
+
+    function clearError() {
+        const el = document.getElementById('error-msg');
+        el.style.display = 'none';
+        el.textContent = '';
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+
+    function saveAndRedirect(user) {
+        localStorage.setItem('guardian_user', JSON.stringify(user));
+        window.location.href = 'dashboard.html';
+    }
+
+    // ── Google ──
+    document.getElementById('google-btn').addEventListener('click', () => {
+        google.accounts.id.initialize({ client_id: CLIENT_ID, callback: handleCredentialResponse });
+        google.accounts.id.prompt();
+    });
+
+    async function handleCredentialResponse(response) {
+        clearError();
+        try {
+            const res = await fetch(`${BACKEND}/api/auth/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: response.credential, client_id: CLIENT_ID }),
+            });
+            if (!res.ok) throw new Error('Google sign-in failed.');
+            saveAndRedirect(await res.json());
+        } catch (e) {
+            showError(e.message || 'Google sign-in failed. Please try again.');
+        }
+    }
+
+    // ── Manual login ──
+    async function submitLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('login-btn');
+        btn.disabled = true; btn.textContent = 'Logging in…';
+        clearError();
+        const form = e.target;
+        try {
+            const res = await fetch(`${BACKEND}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: form.email.value, password: form.password.value }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Login failed.');
+            saveAndRedirect(data);
+        } catch (e) {
+            showError(e.message);
+        } finally {
+            btn.disabled = false; btn.textContent = 'Login';
+        }
+    }
+
+    // ── Manual register ──
+    async function submitRegister(e) {
+        e.preventDefault();
+        const btn = document.getElementById('register-btn');
+        btn.disabled = true; btn.textContent = 'Creating account…';
+        clearError();
+        const form = e.target;
+        try {
+            const res = await fetch(`${BACKEND}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: form.name.value, email: form.email.value, password: form.password.value }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Registration failed.');
+            saveAndRedirect(data);
+        } catch (e) {
+            showError(e.message);
+        } finally {
+            btn.disabled = false; btn.textContent = 'Create Account';
+        }
+    }
+</script>
+</body>
+</html>
