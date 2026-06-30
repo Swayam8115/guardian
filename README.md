@@ -1,7 +1,6 @@
 # 🚨 Guardian — AI-Powered FIR Crime Mapping System
 
-Guardian is an end-to-end crime processing, geocoding, and visualization system that extracts information from FIR PDFs, stores them in a Supabase database, converts location text into latitude/longitude using MapMyIndia Geocoding API, and finally plots all crime points on an interactive map using Mappls Maps.
-
+Guardian is a comprehensive crime processing, geocoding, and visualization system that automates the extraction of information from FIR PDFs, stores the processed data in a Supabase database, transforms textual location data into geographic coordinates (latitude and longitude) using the MapMyIndia Geocoding API, and displays all crime locations on an interactive map using Mappls Maps.
 # ✨ Features
 🔍 1. Automated FIR Extraction
 - Reads FIR PDF files
